@@ -24,7 +24,45 @@ class App extends Component {
     topScore: 0
   };
 
-  
+  //use the shuffle function to shuffle friends
+  handleShuffle = () => {
+    let shuffleFriends = shuffle(friends);
+    this.setState({friends: shuffleFriends})
+  };
+
+  //function to add points to tally
+  handlePoints = () => {
+    const updateScore = this.state.score + 1;
+    this.setState({
+      score: updateScore
+    });
+    if (updateScore > this.state.topScore) {
+      this.setState({ topScore: updateScore});
+    } else if (updateScore === 12) { 
+      alert("You Win!");
+    }
+    this.handleShuffle();
+  }
+
+  //function to start new game
+  handleNewGame = () => {
+    this.setState({
+      clickedFriend: [],
+      score: 0,
+      topScore: this.state.topScore      
+    });
+    this.handleShuffle();
+  };
+
+  //function to handle when a card is clicked
+  handleClickedFriend = id => {
+    if(this.state.clickedFriend.indexOf(id) === -1) {
+      this.handlePoints();
+      this.setState({ clickedFriend: this.state.clickedFriend.concat(id)});
+    } else {
+      this.handleNewGame();
+    }
+  }; 
 
 
   // Map over this.state.friends and render a FriendCard component for each friend object
@@ -42,6 +80,10 @@ class App extends Component {
             id={friend.id}
             key={friend.id}
             image={friend.image}
+            handleShuffle={this.handleShuffle}
+            handlePoints={this.handlePoints}
+            handleNewGame={this.handleNewGame}
+            handleClickedFriend={this.handleClickedFriend}
           />
         ))}
       </Wrapper>
